@@ -1,0 +1,48 @@
+plugins {
+    id 'org.springframework.boot' version '2.4.1'
+    id 'scala'
+    id 'application'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    // Use Scala 2.13 in our library project
+    implementation 'org.scala-lang:scala-library:2.13.3'
+    implementation 'org.scala-lang:scala-compiler:2.13.3'
+
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+    runtimeOnly('org.springframework.boot:spring-boot-starter-jetty')
+
+    // This dependency is used by the application.
+    //implementation 'com.google.guava:guava:29.0-jre'
+
+    // Use Scalatest for testing our library
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'org.scalatest:scalatest_2.13:3.2.2'
+    testImplementation 'org.scalatestplus:junit-4-12_2.13:3.2.2.0'
+
+    // Need scala-xml at test runtime
+    //testRuntimeOnly 'org.scala-lang.modules:scala-xml_2.13:1.2.0'
+}
+
+//application {
+//    mainClass = 'mobile.App'
+//}
+
+bootJar {
+    mainClass = 'mobile.boot.BootApplication'
+}
+
+task repl(type: JavaExec) {
+    main = "scala.tools.nsc.MainGenericRunner"
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput System.in
+    args '-usejavacp'
+}
